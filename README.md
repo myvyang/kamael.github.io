@@ -1,13 +1,12 @@
 # kamael.github.io
 my io
-<img src=y<img src=x>
 <svg>
 <img src=">
 
 
 a
 
-[xxx](hh)
+[xxx<>](hh<>)
 
 
 hhh"
