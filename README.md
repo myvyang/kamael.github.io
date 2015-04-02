@@ -1,15 +1,5 @@
 # kamael.github.io
 my io
 <svg>
-<img src="x">
+<img src="x> [xx](javascript:xx)
 
-
-a
-
-[xxx<>](hh<>)
-
-
-hhh"
-aa>
-
-<a>
