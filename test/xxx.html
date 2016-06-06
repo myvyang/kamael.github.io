@@ -1,4 +1,5 @@
 <script>
+
 ;(function(factory) {
     'use strict';
     /* global window: false, define: false, module: false */
@@ -144,8 +145,6 @@
     /* Ideally, do not touch anything below this line */
     /* ______________________________________________ */
 
-    var formElement = document.createElement('form');
-
     /**
      * _parseConfig
      *
@@ -159,7 +158,7 @@
 
         FORBID_TAGS = 'FORBID_TAGS' in cfg ?
             _addToSet({}, cfg.FORBID_TAGS) : DEFAULT_FORBID_TAGS;
-        ALLOW_UNKNOWN_PROTOCOLS = cfg.ALLOW_UNKNOWN_PROTOCOLS || false; // Default false
+        ALLOW_UNKNOWN_PROTOCOLS = cfg.ALLOW_UNKNOWN_PROTOCOLS || true; // Default false
         WHOLE_DOCUMENT      = cfg.WHOLE_DOCUMENT      ||  false; // Default false
         RETURN_DOM          = cfg.RETURN_DOM          ||  false; // Default false
         RETURN_DOM_FRAGMENT = cfg.RETURN_DOM_FRAGMENT ||  false; // Default false
@@ -269,7 +268,6 @@
      *
      * @param  element to check for clobbering attacks
      * @return true if clobbered, false if safe
-     */
     var _isClobbered = function(elm) {
         if (elm instanceof Text || elm instanceof Comment) {
             return false;
@@ -285,6 +283,7 @@
         }
         return false;
     };
+    */
 
     /**
      * _sanitizeElements
@@ -301,11 +300,12 @@
         /* Execute a hook if present */
         _executeHook('beforeSanitizeElements', currentNode, null);
 
-        /* Check if element is clobbered or can clobber */
+        /* Check if element is clobbered or can clobber
         if (_isClobbered(currentNode)) {
             _forceRemove(currentNode);
             return true;
         }
+        */
 
         /* Now let's check the element's type and name */
         tagName = currentNode.nodeName.toLowerCase();
@@ -404,12 +404,13 @@
                 continue;
             }
 
-            /* Make sure attribute cannot clobber */
+            /* Make sure attribute cannot clobber
             if (SANITIZE_DOM &&
                 (lcName === 'id' || lcName === 'name') &&
                 (value in window || value in document || value in formElement)) {
                 continue;
             }
+            */
 
             // black-list forbid attr from chrome
             if (!_allowTagAndAttr(currentNode.nodeName.toLowerCase(), lcName, value)) {
@@ -435,7 +436,7 @@
                  * This provides support for links that are handled by protocol handlers which may be unknown
                  * ahead of time, e.g. fb:, spotify:
                  */
-            (ALLOW_UNKNOWN_PROTOCOLS && (!IS_SCRIPT_OR_DATA.test(value.replace(ATTR_WHITESPACE,'')) || /^data:image\/\\w+,/i.test(value)))
+            (ALLOW_UNKNOWN_PROTOCOLS && (!IS_SCRIPT_OR_DATA.test(value.replace(ATTR_WHITESPACE,'')) || /^data:image\/\w+,/i.test(value)))
             ) {
                 /* Handle invalid data-* attribute set by try-catching it */
                 try {
@@ -518,7 +519,7 @@
     };
 
     DOMPurify.shouldCheck = function(dirty) {
-        var FILTER_DATA = /(?:<(script|applet|link|object|param|embed|meta|base|iframe|frame))|([^\w](?:(?:on\w+)|id|name)\s*=)|(?:\w+script:|data:)/i;
+        var FILTER_DATA = /(?:<\/*(script|applet|link|object|param|embed|meta|base|iframe|frame))|(?:[^\w]on\w+\s*=)|(?:\w+script:|data:[^(image)])/i;
         if (FILTER_DATA.test(dirty)) {
             return true;
         }
@@ -699,6 +700,7 @@ Object.defineProperty(Element.prototype, "innerHTML", {
         _originInnerHTML.set.call(this, clean);
     }
 });
+
 
 
 </script>
