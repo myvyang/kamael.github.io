@@ -1,0 +1,15 @@
+AddDefaultCharset UTF-8
+
+
+Redirect 301 /github https://github.com/kamael
+
+ErrorDocument 404 /404.html
+ErrorDocument 410 /410.html
+
+Options -Indexes +FollowSymLinks +IncludesNOEXEC
+
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html

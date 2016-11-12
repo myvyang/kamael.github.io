@@ -1,0 +1,57 @@
+---
+layout: default
+---
+<div class="post">
+  <h1 class="post-title">{{ page.title }}</h1>
+
+ <span class="post-date">{{ page.date | date_to_string }}</span>
+ {% if page.categories.size != 0 %}
+  | 
+  <span class="categories">
+   categories
+   {% for cat in page.categories %}
+   <a href="/categories/#{{ cat }}" title="{{ cat }}">{{ cat }}</a>&nbsp;
+   {% endfor %}
+  </span>
+ {% endif %}
+ <br>
+ {% if page.tags.size != 0 %}
+  <span class="tags">
+   tags
+   {% for tag in page.tags %}
+   <a href="/tags/#{{ tag }}" title="{{ tag }}">{{ tag }}</a>&nbsp;
+   {% endfor %}
+  </span>
+ {% endif %}<br><br>
+{{ content }}
+</div>
+
+<!-- Back to the top button  -->
+
+<!--  sharing post on twitter -->
+{% include twitter_plug.html %} 
+
+<!-- related post  -->
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    {% for post in site.related_posts limit:3 %}
+      <li>
+        <h3>
+          <a href="{{ post.url }}">
+            {{ post.title }}
+            <small>{{ post.date | date_to_string }}</small>
+          </a>
+        </h3>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<!-- comment frame -->
+{% case site.comments.provider %}
+{% when "duoshuo" %}
+  {% include duoshuo.html %}
+{% when "disqus" %}
+  {% include disqus.html %}
+{% endcase %}

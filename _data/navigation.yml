@@ -1,0 +1,17 @@
+# Site navigation links
+
+- title: About
+  url: /about/
+
+- title: Academic
+  url: /academic/
+
+- title: Blog
+  url: /blog/
+
+- title: Methodology
+  url: /methodology/
+
+- title: Paper Note
+  url: /notes/
+

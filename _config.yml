@@ -1,0 +1,40 @@
+# Dependencies
+markdown:         kramdown
+highlighter:      pygments
+
+kramdown:
+  auto_ids: true
+  footnote_nr: 1
+  entity_output: as_char
+  toc_levels: 1..6
+  enable_coderay: false
+  
+# Permalinks
+permalink:        /:categories/:title/ #pretty
+
+# Setup
+title:            cgnail's weblog
+tagline:          '  |  notes'
+description:      'A weblog of <a href="https://github.com/kamael" target="_blank">@myvyang</a>, myvyang@gmail.com.<br> Forked from a reserved <a href="https://github.com/cgnail" target="_blank">cgnail</a>.'
+url:              #http://lanyon.getpoole.com
+baseurl:          '/'
+gems: [jekyll-paginate]
+paginate:         10
+
+author:
+  name:           'myvyang'
+  url:            https://github.com/kamael
+
+comments:
+  provider: duoshuo
+  disqus:
+    short_name: myvyang
+  duoshuo:
+    short_name: myvyang
+
+
+# Custom vars
+version:          1.0.0
+
+github:
+  repo:           https://github.com/kamael/kamael.github.io
