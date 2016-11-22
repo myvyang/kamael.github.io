@@ -10,7 +10,7 @@ tags: Python
 
 简而言之，Python开发者认为，如果你可以操作Python字节码，那么你就有权利执行任何二进制指令。虽然某种程度上，他们认可这是个BUG，但是并不打算花时间去修复。
 
-实际上，在我还在上大学的时候，尝试过学习[LangFuzz](https://www.st.cs.uni-saarland.de/publications/files/holler-usenix-2012.pdf)去写一个针对Python的fuzzer。令我欣喜的是，fuzzer刚跑完没多久，就找到了一堆crash。
+在我还在上大学的时候，尝试过学习[LangFuzz](https://www.st.cs.uni-saarland.de/publications/files/holler-usenix-2012.pdf)去写一个针对Python的fuzzer。令我欣喜的是，fuzzer刚跑完没多久，就找到了一堆crash。
 
 于是我兴冲冲的把这些crash中的一个报告给了security@python.org。
 
@@ -42,9 +42,9 @@ exec compile(m, '<string>', 'exec')
 
 很可能今天依然可以导致Python crash
 
-当然crash很多，我简单分析过其中一些，可以直接影响Python的引用计数，应该是可以构造UAF的。
+当时发现的crash很多，我简单分析过其中一些，可以直接影响Python的引用计数，应该是可以构造UAF的。
 
-当然后来，我发现了这个：
+不过后来，我发现了这个：
 
 https://github.com/python/cpython/tree/c30098c8c6014f3340a369a31df9c74bdbacc269/Lib/test/crashers
 
@@ -71,9 +71,11 @@ In particular, make sure to add any new infinite loop crashers to the black
 list so it doesn't try to run them.
 ```
 
-原来开发者们，早就收集了一大堆可以导致Python crash的代码了。可能修复这些BUG需要整体进行较大的改动，于是他们决定不修。大概还是基于上面的原则：如果你都可以在机器里执行这些代码了，为什么就不允许你控制机器呢。
+原来开发者们，早就收集了一大堆可以导致Python crash的代码了。可能修复这些BUG需要整体进行较大的改动，于是他们决定暂时不修。大体还是基于上面的原则：如果你都可以在机器里执行这些代码了，为什么要限制你去控制机器呢。
 
-翻阅Python历史上的安全漏洞，大多都是函数调用即可导致攻击得惩的才算。显然不同的开发者，对于什么算安全漏洞，存在巨大的分歧(当然也和场景有关，比如Javascript，源码本身就是不受信的)。安全问题，还是要结合具体的场景去定义才行。
+可能其他开发者不这么认为。因为有SaaS的概念，软件的安全要求本身就被拓展了。
+
+翻阅Python历史上的安全漏洞，大多都是函数调用即可导致攻击得惩的才算。不同的开发者或安全工作者，对于什么算安全漏洞，存在比较大的分歧(当然也和场景有关，比如Javascript，源码本身就是不受信的)。安全问题，还是要结合具体的场景去定义。
 
 不过换个角度看，作为兴趣爱好，自然没必要纠结这些。只是Python的crash这么容易找到，很大的原因也就是因为它并不会导致严重的问题，否则早就被挖完修完了。同理，如果你在nginx里挖到了一个CVE，那就是很了不起的事。如果是nginx的非默认配置，可能需要打个折扣。如果是挖了一个没多少人知道的web server的CVE，虽然也不错，但是可能并代表不了什么，到现在还存在轻易就能被发现的漏洞，只是因为关注的人比较少罢了。
 
