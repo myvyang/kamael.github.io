@@ -6,9 +6,9 @@ tags: Python
 ---
 
 
-今天抽空大概看了[Deep Dive Into Python's VM: Story of LOAD_CONST Bug](http://doar-e.github.io/blog/2014/04/17/deep-dive-into-pythons-vm-story-of-load_const-bug/)这篇文章，按我的理解，还是Python字节码的锅。
+今天抽空大概看了[Deep Dive Into Python's VM: Story of LOAD_CONST Bug](http://doar-e.github.io/blog/2014/04/17/deep-dive-into-pythons-vm-story-of-load_const-bug/)这篇文章。
 
-简而言之，Python开发者认为，如果你可以操作Python字节码，那么你就有权利执行任何二进制指令。虽然某种程度上，他们认可这是个BUG，但是并不打算花时间去修复。
+简而言之，Python开发者认为，如果你可以操作Python字节码，那么你就有权执行任何二进制指令。虽然某种程度上，他们认可这是个BUG，但是并不打算花时间去修复。
 
 在我还在上大学的时候，尝试过学习[LangFuzz](https://www.st.cs.uni-saarland.de/publications/files/holler-usenix-2012.pdf)去写一个针对Python的fuzzer。令我欣喜的是，fuzzer刚跑完没多久，就找到了一堆crash。
 

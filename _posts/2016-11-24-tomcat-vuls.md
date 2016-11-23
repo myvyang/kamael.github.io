@@ -15,7 +15,7 @@ tags: Tomcat CVE分析
 
 于是tomcat就[在通用功能的基础上，加强了自己的保护](http://svn.apache.org/viewvc/tomcat/tc8.5.x/trunk/java/org/apache/catalina/mbeans/JmxRemoteLifecycleListener.java?r1=1767646&r2=1767645&pathrev=1767646&diff_format=s)。显然，如果Java不升级，只升级Tomcat的意义不大。
 
-从另一方面讲，由于JMX服务本就不应该开放给不受信的网络(特别是公网)，因此这个漏洞本身可以视为无影响的。
+从另一方面讲，由于JMX服务本就不应该开放给不受信的网络(特别是公网)，因此这个漏洞本身可以视为无影响的。可以看看Spring对这个问题的看法：[你应该自己在env里配置credential types](https://jira.spring.io/browse/SPR-14935)
 
 ### CVE-2016-6816
 
