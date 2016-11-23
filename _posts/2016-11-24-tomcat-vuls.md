@@ -1,3 +1,10 @@
+---
+layout: post
+title: "Tomcat 8.0.39漏洞fix"
+categories: notes
+tags: Tomcat CVE分析
+---
+
 ### Important: Remote Code Execution CVE-2016-8735
 
 这个漏洞某种程度上可看作一个漏洞系列。
