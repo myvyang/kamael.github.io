@@ -82,7 +82,62 @@ ROUNDUP这个就比较迷了，`(sizeof(long) - 1)`等于取了`sizeof(long)`长
 
 ==
 
+结构的继承关系
 
+```
+struct sockaddr {
+    u_char sa_len;
+    u_char sa_family;
+    char sa_data[14];
+}
+
+struct sockaddr_dl {
+    u_char sa_len;
+    u_char sa_family;
+    u_short sdl_index;
+    
+    u_char sdl_type;
+    u_char sdl_nlen;
+    
+    u_char sdl_alen;
+    u_char sdl_slen;
+    u_char sdl_data[12];
+}
+```
+
+如上定义的`sockaddr`，`sockaddr_dl`都是可以被继承的，后者正是继承前者。
+
+在这里，通过`sa_len`来存储结构体的长度，然后在结构体的末尾定义一个char数组，来表明，这个结构体的长度可以被拓展。
+
+在C中，指针的类型的转换非常容易，我们定义一个结构体，包含指向`sockaddr`的成员，然后指向sockaddr_dl结构，没有任何问题。
+
+```
+struct ifaddr {
+    ...
+    struct sockaddr *ifa_addr;
+    struct sockaddr *ifa_netmask;
+    ...
+} ifa;
+
+struct sockaddr_dl *sdl = ...;
+ifa->ifa_addr = (struct sockaddr *)sdl;
+``` 
+==
+
+读代码的脉络：
+
+1. 搞清楚数据结构
+2. 调查函数的参数，返回值的含义，进而弄清楚函数的功能，再去细抠
+3. 弄清楚代码要解决的问题的背景
+4. 学习代码中的一些优化点的技巧
+
+== 
+
+8.4.2，IP允许链路层填充分组，因此接收到的IP分组的大小，可能比IP首部宣称的大小还要大，因此需要做检查，丢弃多余的字节。
+
+IP包处理非常细致的做了很多检查，以保证协议的各个部分符合预期。
+
+==
 
 
 
