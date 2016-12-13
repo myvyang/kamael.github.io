@@ -139,6 +139,127 @@ IP包处理非常细致的做了很多检查，以保证协议的各个部分符
 
 ==
 
+可移植的IP校验和实现，要非常注意里面奇数位，偶数位的交换的实现，很容易出错
+
+```
+// from https://github.com/chenshuo/4.4BSD-Lite2/blob/master/sys/netinet/in_cksum.c
+
+#define ADDCARRY(x)  (x > 65535 ? x -= 65535 : x)
+#define REDUCE {l_util.l = sum; sum = l_util.s[0] + l_util.s[1]; ADDCARRY(sum);} // 将sum的高16bit和低16bit相加，然后模2^16
+
+int
+in_cksum(m, len)
+	register struct mbuf *m;
+	register int len; // 表示需要处理的总字节数
+{
+	register u_short *w; // 代表用于计算的2个字节，16bit
+	register int sum = 0; // 保存临时校验和	register int mlen = 0; // mbuf里的有效字节数
+	int byte_swapped = 0; // 标志sum中的奇偶地址字节是否进行过交换
+
+	union {
+		char	c[2];
+		u_short	s;
+	} s_util;
+	union {
+		u_short s[2];
+		long	l;
+	} l_util;
+
+	for (;m && len; m = m->m_next) {
+		if (m->m_len == 0)
+			continue;
+		w = mtod(m, u_short *);
+		if (mlen == -1) { // 表示上一个串还剩一个字节没处理
+			/*
+			 * The first byte of this mbuf is the continuation
+			 * of a word spanning between this mbuf and the
+			 * last mbuf.
+			 *
+			 * s_util.c[0] is already saved when scanning previous 
+			 * mbuf.
+			 */
+			 
+			s_util.c[1] = *(char *)w;
+			sum += s_util.s;
+			w = (u_short *)((char *)w + 1);
+			mlen = m->m_len - 1;
+			len--;
+		} else
+			mlen = m->m_len;
+		if (len < mlen)
+			mlen = len; // 接收到的IP分组的大小，可能比IP首部宣称的大小还要大，因此需要做检查，丢弃多余的字节
+		len -= mlen;
+		/*
+		 * Force to even boundary.
+		 */
+		if ((1 & (int) w) && (mlen > 0)) {
+          // 实现字节对齐，w为指针，要保证最低位为0；如果为1，则将当前的这个字节保存起来，和下个mbuf的第一个字节配对计算。
+          
+			REDUCE;
+			sum <<= 8; // 交换sum的奇数地址字节和偶数地址字节，保证后面w中第一个字节为偶数地址字节，之后sum保存的是[偶数地址和，奇数地址和]
+			s_util.c[0] = *(u_char *)w;
+			w = (u_short *)((char *)w + 1);
+			mlen--;
+			byte_swapped = 1;
+		}
+			
+		/*
+		 * Unroll the loop to make overhead from
+		 * branches &c small.
+		 */
+		while ((mlen -= 32) >= 0) {
+			sum += w[0]; sum += w[1]; sum += w[2]; sum += w[3];
+			sum += w[4]; sum += w[5]; sum += w[6]; sum += w[7];
+			sum += w[8]; sum += w[9]; sum += w[10]; sum += w[11];
+			sum += w[12]; sum += w[13]; sum += w[14]; sum += w[15];
+			w += 16;
+		}
+		mlen += 32;
+		while ((mlen -= 8) >= 0) {
+			sum += w[0]; sum += w[1]; sum += w[2]; sum += w[3];
+			w += 4;
+		}
+		mlen += 8;
+		if (mlen == 0 && byte_swapped == 0)
+			continue; // 刚好结束，且没有交换过奇偶地址字节，则直接进入下一个mbuf计算
+		REDUCE;
+		while ((mlen -= 2) >= 0) {
+			sum += *w++;
+		}
+		if (byte_swapped) {   
+			REDUCE;
+			sum <<= 8; // 如果sum中的奇偶地址字节进行过交换，那么这里要交换回来，之后sum保存的是[奇数地址和，偶数地址和]
+			byte_swapped = 0; 			
+			if (mlen == -1) { // 表示最后还多出来一个字节，这个肯定是偶数地址字节；放在位置1，然后和之前放在位置0的奇数地址字节一起加起来
+				s_util.c[1] = *(char *)w;
+				sum += s_util.s;
+				mlen = 0;
+			} else
+				mlen = -1; // 这里本来mlen=-2，表示刚好处理完了。因为之前保存了一个奇数地址字节，用-1告诉下个mbuf，这个mbuf还留了一位。这里sum保存的是[奇数地址和，偶数地址和]，刚好剩下的奇数地址字节在下个循环里会加到奇数地址和里
+		} else if (mlen == -1)
+	       // 注意这个分支里，说明mbuf一开始就是偶数地址，sum一开始保存的就是[偶数地址和，奇数地址和]，所以多出来的一个直接放在0位置。这个处理逻辑中，w第一个字节是偶数地址字节，在下个循环里会加到偶数地址和里，所以放在0位置
+			s_util.c[0] = *(char *)w; // 最后多处一个字节
+	}
+	if (len)
+		printf("cksum: out of data\n");
+	if (mlen == -1) {
+		/* The last mbuf has odd # of bytes. Follow the
+		   standard (the odd byte may be shifted left by 8 bits
+		   or not as determined by endian-ness of the machine) */
+		s_util.c[1] = 0; // 容易漏的步骤
+		sum += s_util.s;
+	}
+	REDUCE;
+	return (~sum & 0xffff);
+}
+
+```
+
+RFC 1071 mentions two optimizations that don’t appear in Net/3: a combined copy-with-checksum operation and incremental checksum updates. 
+
+"a combined copy-with-checksum operation and incremental checksum updates." 被翻译成 "联合的有校验和的复制操作和递增的检验和更新" 特别别扭。这句话的意思是在复制的过程中进行校验和计算，与增量更新校验和。
+
+==
 
 
 
