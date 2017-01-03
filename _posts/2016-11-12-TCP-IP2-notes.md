@@ -261,6 +261,25 @@ RFC 1071 mentions two optimizations that don’t appear in Net/3: a combined cop
 
 ==
 
+25.5 中，有一个动作：
+
+1. 保存 tp = inp->next
+2. 发送完请求后，检测tp->prev是否等于inp，以保证在发送请求过程中，当前的块没有被删除
+
+这个的正确性取决于在删除当前块的时候，正确的做了摘链处理
+
+```
+inp->prev->next = inp->next;
+inp->next->prev = inp->prev;
+```
+
+如果没有做摘链则会导致UAF。
+
+==
+
+25.6.1 当TCP处于半链接状态时(本地已发送FIN，对方却并没有关闭即处于FIN_WAIT2状态)，如果10分钟内没有收到任何回应(例如ACK)，则关闭连接。
+
+这种做法不符合TCP的规范，但是如果不关闭的话，将存在无意义的连接保留。
 
 
 
