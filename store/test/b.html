@@ -1,0 +1,19 @@
+<script>
+
+function c() {
+  clearInterval(s);
+
+  console.log(1);
+  function f() {
+    console.log(2);
+    try { f(); } catch(e) {}
+    console.log(3);
+  }
+
+  console.log(4);
+  f();
+  console.log(5);
+}
+
+var s = setInterval(c, 1);
+</script>

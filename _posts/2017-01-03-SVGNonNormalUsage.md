@@ -40,6 +40,14 @@ tags: SVG
 
 可以指定动画应用到哪个节点上。默认用在父节点。
 
+### \<script\>的href属性
+
+```
+xlink:href = "<iri>"
+```
+
+An IRI reference to an external resource containing the script code.
+
 ### XSS Auditor Bypass
 
 ```
