@@ -1,18 +1,26 @@
 <script>
 
+s = ""
+
+function log(x) {
+    s += x;
+}
+
 function c() {
   clearInterval(s);
 
-  console.log(1);
+  log(1);
   function f() {
-    console.log(2);
+    log(2);
     try { f(); } catch(e) {}
-    console.log(3);
+    log(3);
   }
 
-  console.log(4);
+  log(4);
   f();
-  console.log(5);
+  log(5);
+
+  console.log(s)
 }
 
 var s = setInterval(c, 1);
