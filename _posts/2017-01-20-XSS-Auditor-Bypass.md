@@ -5,6 +5,14 @@ categories: notes
 tags: 漏洞分析
 ---
 
+```
+注：
+
+2015-07-02 原发于 http://drops.wooyun.org/papers/6905
+2017-01-20 补档
+```
+
+
 前几天，在微博上看到一条关于最近的 Chrome XSS Filter Bypass 的链接：webo，原始补丁在这里：补丁。在补丁中还提供了 PoC 用于后续的单元测试。
 
 攻击者用一种巧妙的方法绕过了 Chrome 的 XSSAuditor 的过滤。不过微博里的那篇短文并没有对这个漏洞的缘由作分析。碰巧前段时间笔者仔细读过 Chrome 的 XSSAuditor 的代码，因此趁此机会自己分析了一下，如果有错误的地方还望指教。
