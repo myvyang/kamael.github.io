@@ -1,0 +1,247 @@
+
+// v8::internal::Invoke 中
+
+0x08098097d06 <v8::internal::Invoke+717>     push   DWORD PTR [ebp+0x1c]     // args
+0x08098097d09 <v8::internal::Invoke+720>     push   DWORD PTR [ebp+0x18]     // *argc
+0x08098097d0c <v8::internal::Invoke+723>     push   esi                      // *receive
+0x08098097d0d <v8::internal::Invoke+724>     push   ebx                      // *func
+0x08098097d0e <v8::internal::Invoke+725>     push   eax                      // func->code->entry()
+                                             mov    eax,DWORD PTR [ebp-0x1c] // entry
+                                             call eax                        // 进入 JSEntryStub::GenerateBody 生成的代码中
+                                             
+// JSEntryStub::GenerateBody 生成的桩代码
+   
+   0xf7200a68:  push   ebp                              // __ push(ebp);
+   0xf7200a69:  mov    ebp,esp                          // __ mov(ebp, Operand(esp));
+   0xf7200a6b:  push   0xfffffffd
+   0xf7200a6d:  push   0x2
+   0xf7200a6f:  push   edi
+   0xf7200a70:  push   esi
+   0xf7200a71:  push   ebx
+   0xf7200a72:  push   DWORD PTR ds:0x824be7c
+   0xf7200a78:  call   0xf7200a8d                       // __ call(&invoke);
+   0xf7200a7d:  mov    DWORD PTR ds:0x824be68,eax
+   0xf7200a83:  mov    eax,0x7
+   0xf7200a88:  jmp    0xf7200ac6
+   0xf7200a8d:  push   0x0
+   0xf7200a8f:  push   0x0
+   0xf7200a91:  push   0x0
+   0xf7200a93:  push   0x0
+   0xf7200a95:  mov    eax,DWORD PTR ds:0x824be80
+   0xf7200a9b:  mov    DWORD PTR ds:0x824be80,esp
+   0xf7200aa1:  push   eax
+   0xf7200aa2:  mov    edx,DWORD PTR ds:0x8241b68
+   0xf7200aa8:  mov    DWORD PTR ds:0x824be68,edx
+   0xf7200aae:  push   0x0
+   0xf7200ab0:  mov    edx,0x8241264
+   0xf7200ab6:  mov    edx,DWORD PTR [edx]              // __ mov(edx, Operand(edx, 0));
+   0xf7200ab8:  lea    edx,[edx+0x17]                   // __ lea(edx, FieldOperand(edx, Code::kHeaderSize));
+   0xf7200abb:  call   edx                              // __ call(Operand(edx));
+                                                        // 进入 Generate_JSEntryTrampolineHelper 生成的代码中
+   0xf7200abd:  pop    DWORD PTR ds:0x824be80
+   0xf7200ac3:  add    esp,0x14
+   0xf7200ac6:  pop    DWORD PTR ds:0x824be7c
+   0xf7200acc:  pop    ebx
+   0xf7200acd:  pop    esi
+   0xf7200ace:  pop    edi
+   0xf7200acf:  add    esp,0x8
+   0xf7200ace:  pop    edi
+   0xf7200acf:  add    esp,0x8
+   0xf7200ad2:  pop    ebp
+   0xf7200ad3:  ret                                          
+
+// Generate_JSEntryTrampolineHelper 生成的代码
+
+   0xf7201060:  xor    esi,esi                          // __ xor_(esi, Operand(esi));
+   0xf7201062:  push   ebp
+   0xf7201063:  mov    ebp,esp
+   0xf7201065:  push   esi
+   0xf7201066:  push   0xc
+   0xf7201068:  push   0x0
+   0xf720106a:  mov    ebx,DWORD PTR [ebp+0x0]
+   0xf720106d:  mov    ecx,DWORD PTR [ebx+0xc]
+   0xf7201070:  mov    esi,DWORD PTR [ecx+0x13]
+   0xf7201073:  push   ecx
+   0xf7201074:  push   DWORD PTR [ebx+0x10]
+   0xf7201077:  mov    eax,DWORD PTR [ebx+0x14]
+   0xf720107a:  mov    ebx,DWORD PTR [ebx+0x18]
+   0xf720107d:  xor    ecx,ecx
+   0xf720107f:  jmp    0xf720108b
+   0xf7201084:  mov    edx,DWORD PTR [ebx+ecx*4]
+   0xf7201087:  push   DWORD PTR [edx]
+   0xf7201089:  inc    ecx
+   0xf720108b:  cmp    ecx,eax
+   0xf720108d:  jne    0xf7201084
+   0xf720108f:  mov    edi,DWORD PTR [esp+eax*4+0x4]
+   0xf7201093:  mov    edx,DWORD PTR [edi+0xf]
+   0xf7201096:  mov    esi,DWORD PTR [edi+0x13]
+   0xf7201099:  mov    ebx,DWORD PTR [edx+0xf]
+   0xf720109c:  mov    edx,DWORD PTR [edx+0x7]
+   0xf720109f:  lea    edx,[edx+0x17]
+   0xf72010a2:  cmp    ebx,eax                          
+   0xf72010a4:  je     0xf72010b4
+   0xf72010aa:  call   0xf7200d04                       // __ call(Handle<Code>(Builtins::builtin(Builtins::JSConstructCall)),
+            code_target);
+   0xf72010af:  jmp    0xf72010b6
+   0xf72010b4:  call   edx                              // __ InvokeFunction(edi, actual, CALL_FUNCTION);
+                                                        // 进入 Ia32CodeGenerator::GenCode 生成的代码中
+   0xf72010b6:  leave
+   0xf72010b7:  ret    0x4
+
+// Ia32CodeGenerator::GenCode 生成的代码
+
+   0xf720e118:  push   ebp                              // EnterJSFrame 生成的四行
+   0xf720e119:  mov    ebp,esp
+   0xf720e11b:  push   esi
+   0xf720e11c:  push   edi
+   0xf720e11d:  mov    eax,0xf7200135
+   0xf720e123:  push   eax
+   0xf720e124:  push   0xf6f9e2c9
+   0xf720e129:  push   esi
+   0xf720e12b:  push   0x0
+   0xf720e12d:  call   0xf7202a80                       // 通过调用 MacroAssembler::TailCallRuntime 生成的代码来调用C函数
+   0xf720e132:  cmp    esp,DWORD PTR ds:0x82418e8
+   0xf720e138:  jb     0xf720e625
+   0xf720e13e:  push   0xf720c8dd
+   0xf720e143:  mov    ecx,DWORD PTR [ebp-0x8]
+   0xf720e146:  mov    ecx,DWORD PTR [ecx+0x17]
+   0xf720e149:  mov    ebx,DWORD PTR [ecx+0x13]
+   0xf720e14c:  cmp    ebx,0xf7200135
+   0xf720e152:  je     0xf720e610
+   0xf720e158:  push   ebx
+   0xf720e159:  call   0xf7206338  
+   
+   // JS的JIT生成代码太多，只贴个开头
+   ...
+   ...
+
+
+// MacroAssembler::TailCallRuntime 生成的代码
+
+   0xf7202a80:  mov    eax,0x3                          // mov(Operand(eax), Immediate(num_arguments));
+   
+// MacroAssembler::JumpToBuiltin 生成的代码
+
+   0xf7202a86:  mov    ebx,0x810a095                    //   mov(Operand(ebx), Immediate(ext));
+   0xf7202a8c:  jmp    0xf7200660                       //   jmp(ces.GetCode(), code_target);
+                                                        // 进入 CEntryStub::GenerateBody 生成的代码中
+    
+//  CEntryStub::GenerateBody 生成的代码
+// 同时包括 CEntryStub::GenerateCore 等几个子函数
+    
+   0xf7200660:  push   ebp                              // __ push(ebp);  // caller fp
+   0xf7200661:  mov    ebp,esp                          // __ mov(ebp, Operand(esp));  // C entry fp
+   0xf7200663:  push   ebx                              // __ push(ebx);  // C function
+   0xf7200664:  push   0x0
+   0xf7200666:  push   0x0
+   0xf7200668:  mov    DWORD PTR ds:0x824be7c,ebp
+   0xf720066e:  mov    DWORD PTR ds:0x824be64,esi
+   0xf7200674:  mov    edi,eax
+   0xf7200676:  sub    esp,0x8
+   0xf7200679:  and    esp,0xfffffff0
+   0xf720067c:  mov    DWORD PTR [ebp-0x8],esp
+                                                        // Call C function.
+   0xf720067f:  lea    eax,[ebp+edi*4+0x4]
+   0xf7200683:  mov    DWORD PTR [esp],edi              // __ mov(Operand(esp, 0 * kPointerSize), edi);  // argc.
+   0xf7200686:  mov    DWORD PTR [esp+0x4],eax          // __ mov(Operand(esp, 1 * kPointerSize), eax);  // argv.
+   0xf720068a:  call   ebx                              // __ call(Operand(ebx));
+                                                        // 进入 builtin 函数的地址，对应的代码为C++写的了
+   0xf720068c:  lea    ecx,[eax+0x1]
+   0xf720068f:  test   cl,0x3
+   0xf7200692:  je     0xf72006bf
+   0xf7200698:  mov    ecx,edi
+   0xf720069a:  mov    DWORD PTR ds:0x824be7c,0x0
+   0xf72006a4:  lea    esp,[ebp-0x4]
+   0xf72006a7:  pop    ebx
+   0xf72006a8:  pop    ebp
+   0xf72006a9:  mov    esi,DWORD PTR ds:0x824be64
+   0xf72006af:  mov    DWORD PTR ds:0x824be64,0x0
+   0xf72006b9:  pop    ebx
+   0xf72006ba:  lea    esp,[esp+ecx*4]
+   0xf72006bd:  push   ebx
+   0xf72006be:  ret
+   0xf72006bf:  test   al,0xc
+   0xf72006c1:  je     0xf72006f0
+   0xf72006c7:  cmp    eax,0x7
+   0xf72006ca:  jne    0xf72006e2
+   0xf72006d0:  mov    eax,DWORD PTR ds:0x824be68
+   0xf72006d6:  mov    edx,DWORD PTR ds:0x8241b68
+   0xf72006dc:  mov    DWORD PTR ds:0x824be68,edx
+   0xf72006e2:  cmp    eax,0xf
+   0xf72006e5:  je     0xf7200769
+   0xf72006eb:  jmp    0xf72007a6
+   0xf72006f0:  mov    DWORD PTR [esp],eax
+   0xf72006f3:  call   0x8133ab0 <v8::internal::Runtime::PerformGC(v8::internal::Object*)>
+   0xf72006f8:  lea    eax,[ebp+edi*4+0x4]
+   0xf72006fc:  mov    DWORD PTR [esp],edi
+   0xf72006ff:  mov    DWORD PTR [esp+0x4],eax
+   0xf7200703:  call   ebx
+   0xf7200705:  lea    ecx,[eax+0x1]
+   0xf7200708:  test   cl,0x3
+   0xf720070b:  je     0xf7200738
+   0xf72006d6:  mov    edx,DWORD PTR ds:0x8241b68
+   0xf72006dc:  mov    DWORD PTR ds:0x824be68,edx
+   0xf72006e2:  cmp    eax,0xf
+   0xf72006e5:  je     0xf7200769
+   0xf72006eb:  jmp    0xf72007a6
+   0xf72006f0:  mov    DWORD PTR [esp],eax
+   0xf72006f3:  call   0x8133ab0 <v8::internal::Runtime::PerformGC(v8::internal::Object*)>
+   0xf72006f8:  lea    eax,[ebp+edi*4+0x4]
+   0xf72006fc:  mov    DWORD PTR [esp],edi
+   0xf72006ff:  mov    DWORD PTR [esp+0x4],eax
+   0xf7200703:  call   ebx
+   0xf7200705:  lea    ecx,[eax+0x1]
+   0xf7200708:  test   cl,0x3
+   0xf720070b:  je     0xf7200738
+   0xf7200711:  mov    ecx,edi
+   0xf7200713:  mov    DWORD PTR ds:0x824be7c,0x0
+   0xf720071d:  lea    esp,[ebp-0x4]
+   0xf7200720:  pop    ebx
+   0xf7200721:  pop    ebp
+   0xf7200722:  mov    esi,DWORD PTR ds:0x824be64
+   0xf7200728:  mov    DWORD PTR ds:0x824be64,0x0
+   0xf7200732:  pop    ebx
+   0xf7200733:  lea    esp,[esp+ecx*4]
+   0xf7200736:  push   ebx
+   0xf7200737:  ret
+   0xf7200738:  test   al,0xc
+   0xf720073a:  je     0xf7200769
+   0xf7200740:  cmp    eax,0x7
+   0xf7200743:  jne    0xf720075b
+   0xf7200749:  mov    eax,DWORD PTR ds:0x824be68
+   0xf720074f:  mov    edx,DWORD PTR ds:0x8241b68
+   0xf7200755:  mov    DWORD PTR ds:0x824be68,edx
+   0xf720075b:  cmp    eax,0xf
+   0xf720075e:  je     0xf7200769
+   0xf7200764:  jmp    0xf72007a6
+   0xf7200769:  mov    edx,DWORD PTR ds:0x824be80
+   0xf720076f:  cmp    DWORD PTR [edx+0xc],0x0
+   0xf7200773:  je     0xf720077e
+   0xf7200779:  mov    edx,DWORD PTR [edx-0x4]
+   0xf720077c:  jmp    0xf720076f
+   0xf720077e:  mov    eax,DWORD PTR [edx-0x4]
+   0xf7200781:  mov    DWORD PTR ds:0x824be80,eax
+   0xf7200787:  mov    eax,0x0
+   0xf720078c:  mov    DWORD PTR ds:0x824be70,eax
+   0xf7200792:  mov    eax,0xf
+   0xf7200797:  mov    DWORD PTR ds:0x824be68,eax
+   0xf720079d:  mov    esp,edx
+   0xf720079f:  xor    esi,esi
+   0xf72007a1:  pop    edi
+   0xf72007a2:  pop    ebp
+   0xf72007a3:  pop    edx
+   0xf72007a4:  pop    edx
+   0xf72007a5:  ret
+   0xf72007a6:  mov    edx,DWORD PTR ds:0x824be80
+   0xf72007ac:  mov    ecx,DWORD PTR [edx-0x4]
+   0xf72007af:  mov    DWORD PTR ds:0x824be80,ecx
+   0xf72007b5:  mov    esp,edx
+   0xf72007b7:  pop    edi
+   0xf72007b8:  pop    ebp
+   0xf72007b9:  pop    edx
+   0xf72007ba:  pop    edx
+   0xf72007bb:  xor    esi,esi
+   0xf72007bd:  cmp    ebp,0x0
+   0xf72007c0:  je     0xf72007c9
+   0xf72007c6:  mov    esi,DWORD PTR [ebp-0x4]
+   0xf72007c9:  ret
