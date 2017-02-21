@@ -13,9 +13,9 @@ tags: 内网安全
 
     https://research.google.com/pubs/archive/43231.pdf
     
-    主要介绍BeyondCorp整体的架构。文笔详实。大体上和阿里的体系非常接近，大多数设施可以找到一一对应的点。不过阿里缺失BeyondCorp这个模块，而谷歌的"开放内网"策略在很大程度上依赖于此。
+    主要介绍BeyondCorp整体的架构。文笔详实。大体上和阿里的体系非常接近，大多数设施可以找到一一对应的点。不过阿里缺失Access Proxy这个模块，而谷歌的"开放内网"策略在很大程度上依赖于此。
     
-    反过来说，BeyondCorp项目的目的即在于"开放内网"来倒逼内部应用和外部应用一样安全，如果不包含BeyondCorp就不可能达到这个目的了。
+    反过来说，BeyondCorp项目的目的即在于通过"开放内网"来倒逼内部应用和外部应用一样安全，如果不包含BeyondCorp就不可能达到这个目的了。
 
 2. BeyondCorp: Design to Deployment at Google
 
