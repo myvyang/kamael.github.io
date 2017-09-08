@@ -7,5 +7,7 @@ https://cs.chromium.org/chromium/src/third_party/WebKit/Source/build/scripts/mak
 
 注意这里 \" \' 都是quote，可以混用。
 
-空格包括 '\n\r\t\f '
+空格包括 '\n\r\t\f '。
+
+CSS词法解析是无状态的，只是一个个读取字符，生成token，然后把token流组成合适的CSS规则。
 
