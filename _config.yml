@@ -16,7 +16,7 @@ permalink:        /:categories/:title/ #pretty
 title:            myvyang's weblog
 tagline:          '  |  notes'
 description:      'A weblog of <a href="https://github.com/kamael" target="_blank">@myvyang</a>, myvyang@gmail.com.<br> Forked from a reserved <a href="https://github.com/cgnail" target="_blank">cgnail</a>.'
-url:              #http://lanyon.getpoole.com
+url:              'http://blog.12.rs/'
 baseurl:          '/'
 gems: [jekyll-paginate]
 paginate:         10
