@@ -21,9 +21,9 @@ excerpt: "An archive of posts sorted by tag."
   {% for post in site.tags[this_word] %}{% if post.title != null %}
       <ul>
         <span class="post-date">{{ post.date | date_to_string }}</span>
-        <a href="{{ site.url }}{{ post.url }}"> {{ post.title }} </a>
+        <a href="{{ site.url }}/{{ post.url }}"> {{ post.title }} </a>
       </ul>
-<!--     <li><a href="{{ site.url }}{{ post.url }}">{{ post.title }}<span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span></a></li> -->
+<!--     <li><a href="{{ site.url }}/{{ post.url }}">{{ post.title }}<span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span></a></li> -->
   {% endif %}{% endfor %}
   </ul>
 {% endunless %}{% endfor %}

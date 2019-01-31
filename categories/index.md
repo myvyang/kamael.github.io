@@ -19,10 +19,10 @@ excerpt: "An archive of posts sorted by categories."
   <h2 id="{{ this_word }}">{{ this_word }}</h2>
   <ul class="post-list">
   {% for post in site.categories[this_word] %}{% if post.title != null %}
-    <!-- <li><a href="{{ site.url }}{{ post.url }}">{{ post.title }}<span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span></a></li> -->
+    <!-- <li><a href="{{ site.url }}/{{ post.url }}">{{ post.title }}<span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span></a></li> -->
       <ul>
         <span class="post-date">{{ post.date | date_to_string }}</span>
-        <a href="{{ site.url }}{{ post.url }}"> {{ post.title }} </a>
+        <a href="{{ site.url }}/{{ post.url }}"> {{ post.title }} </a>
       </ul>
   {% endif %}{% endfor %}
   </ul>
